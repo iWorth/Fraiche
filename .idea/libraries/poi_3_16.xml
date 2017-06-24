@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="poi-3.16">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Dropbox/iWørth/Librerias Java/Poi - Excel/poi-3.16.jar!/" />
+      <root url="jar://$USER_HOME$/Dropbox/iWørth/Librerias Java/Poi - Excel/poi-examples-3.16.jar!/" />
+      <root url="jar://$USER_HOME$/Dropbox/iWørth/Librerias Java/Poi - Excel/poi-excelant-3.16.jar!/" />
+      <root url="jar://$USER_HOME$/Dropbox/iWørth/Librerias Java/Poi - Excel/poi-ooxml-3.16.jar!/" />
+      <root url="jar://$USER_HOME$/Dropbox/iWørth/Librerias Java/Poi - Excel/poi-ooxml-schemas-3.16.jar!/" />
+      <root url="jar://$USER_HOME$/Dropbox/iWørth/Librerias Java/Poi - Excel/poi-scratchpad-3.16.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
