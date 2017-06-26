@@ -1,6 +1,8 @@
 package sample;
 
 
+import sample.ComparadorNombres.ComparaNombres;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,14 +13,15 @@ public class Main {
 
         ArrayList<String> SanJoseExistencias = new ArrayList<>();
         ComparaNombres javaPoiUtils = new ComparaNombres();
-        File excelFile = new File("/Users/iWorth/Desktop/Prueba/LISTA DE ARTICULOS SAN JOSE.xls");
-        File newExcelFile = new File("/Users/iWorth/Desktop/Prueba/nuevooo.xls");
+        File excelFile = new File("/Users/iWorth/Desktop/Prueba/LISTA DE ARTICULOS PUNTARENAS.xls");
+        File newExcelFile = new File("/Users/iWorth/Desktop/Prueba/nuevooo2.xls");
         try {
             newExcelFile.createNewFile();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        javaPoiUtils.readExcelFile(excelFile,SanJoseExistencias);
-        javaPoiUtils.writeExcelFile(newExcelFile,SanJoseExistencias);
+        javaPoiUtils.readExcelFile(excelFile,SanJoseExistencias,1);
+        System.out.println(javaPoiUtils.closer(SanJoseExistencias,"vainila"));
+        ///javaPoiUtils.writeExcelFile(newExcelFile,SanJoseExistencias);
     }
 }
