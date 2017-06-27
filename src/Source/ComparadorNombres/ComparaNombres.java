@@ -1,9 +1,15 @@
-package sample.ComparadorNombres;
+package Source.ComparadorNombres;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ResourceBundle;
 
+import javafx.scene.control.*;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.layout.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -11,9 +17,17 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-public class ComparaNombres {
+public class ComparaNombres implements Initializable {
 
-    public ArrayList<NombreNuevoAntiguo> nombresACorregir(ArrayList<String> SJ,ArrayList<String> PT){
+    @FXML
+    Label label;
+
+    @FXML
+    Pane pane;
+    public void initialize(URL fxmlLocations, ResourceBundle resources){
+
+    }
+    public ArrayList<NombreNuevoAntiguo> nombresACorregir(ArrayList<String> SJ, ArrayList<String> PT){
         ArrayList<NombreNuevoAntiguo> nombreNuevoAntiguos = new ArrayList<>();
         for(int i=0;i<PT.size();i++){
             if(!SJ.contains(PT.get(i))){
@@ -28,16 +42,17 @@ public class ComparaNombres {
             distancias.add(distance(SJ.get(i),nombre));
         }
         Collections.sort(distancias);
+        int dis = 0;
         for(int i=0;i<SJ.size();i++){
-            if(distance(SJ.get(i),nombre)==distancias.get(0)){
+            dis = distancias.get(0);
+            if(dis<3 && distance(SJ.get(i),nombre)==dis){
                 return SJ.get(i);
             }
         }
-        return "";
+        return "No Encontrado";
 
     }
-    public static int distance(String a, String b)
-    {
+    public static int distance(String a, String b) {
         a = a.toLowerCase();
         b = b.toLowerCase();
         int[] costs = new int[b.length() + 1];
@@ -57,19 +72,24 @@ public class ComparaNombres {
         }
         return costs[b.length()];
     }
-    public void writeExcelFile(File excelNewFile, ArrayList<String> interseccion){
+    public void writeExcelFile(File excelNewFile, ArrayList<NombreNuevoAntiguo> interseccion){
         OutputStream excelNewOutputStream = null;
         try{
             excelNewOutputStream = new FileOutputStream(excelNewFile);
             HSSFWorkbook hssfWorkbookNew = new HSSFWorkbook();
             HSSFSheet hssfSheetNew = hssfWorkbookNew.createSheet("Corregir Nombre");
             HSSFRow hssfRowNew;
-            HSSFCell cellNew;
+            HSSFCell cellNewPT;
+            HSSFCell cellNewSJ;
             for (int r = 0; r < interseccion.size();r++){
                 hssfRowNew = hssfSheetNew.createRow(r);
-                cellNew = hssfRowNew.createCell(0);
-                cellNew.setCellType(HSSFCell.CELL_TYPE_STRING);
-                cellNew.setCellValue(interseccion.get(r));
+                cellNewPT = hssfRowNew.createCell(0);
+                cellNewSJ = hssfRowNew.createCell(1);
+                cellNewPT.setCellType(HSSFCell.CELL_TYPE_STRING);
+                cellNewSJ.setCellType(HSSFCell.CELL_TYPE_STRING);
+                cellNewPT.setCellValue(interseccion.get(r).nombrePuntarenas);
+                cellNewSJ.setCellValue(interseccion.get(r).nombreSanJose);
+                System.out.println(distance(interseccion.get(r).nombrePuntarenas,interseccion.get(r).nombreSanJose));
             }
             hssfWorkbookNew.write(excelNewOutputStream);
             excelNewOutputStream.close();
@@ -96,10 +116,8 @@ public class ComparaNombres {
                 if(tipo==1 && r!=1){
                     r++;
                 }
-                System.out.println(r);
                 hssfRow = hssfSheet.getRow(r);
                 if (hssfRow == null && r > 9){
-                    System.out.println("a");
                     break;
                 }else{
                     HSSFCell tmp = null;
@@ -113,7 +131,6 @@ public class ComparaNombres {
                                                         (hssfRow.getCell(c).getCellType() == Cell.CELL_TYPE_FORMULA)?"FORMULA":
                                                                 (hssfRow.getCell(c).getCellType() == Cell.CELL_TYPE_ERROR)?"ERROR":"";
                         existencias.add(cellValue);
-                        System.out.println("entro");
                     }
                 }
             }

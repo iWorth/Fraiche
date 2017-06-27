@@ -1,4 +1,4 @@
-package sample.ComparadorNombres;
+package Source.ComparadorNombres;
 
 public class NombreNuevoAntiguo {
     String nombreSanJose;
