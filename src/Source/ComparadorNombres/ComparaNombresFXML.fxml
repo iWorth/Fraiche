@@ -9,11 +9,11 @@
 
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="335.0" prefWidth="275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Source.ComparadorNombres.ComparaNombres">
    <children>
-      <Label fx:id="label" layoutX="55.0" layoutY="14.0" prefHeight="118.0" prefWidth="165.0" text="Simply">
+      <Label fx:id="label" alignment="CENTER" layoutX="6.0" layoutY="6.0" prefHeight="33.0" prefWidth="263.0" text="Comparar nombres" textAlignment="JUSTIFY" textOverrun="CENTER_WORD_ELLIPSIS">
          <font>
-            <Font size="49.0" />
+            <Font size="28.0" />
          </font>
       </Label>
-      <Button fx:id="btoCompara_nombres" layoutX="72.0" layoutY="141.0" mnemonicParsing="false" text="Compara nombres" />
+      <Button fx:id="btoCompara_nombres" layoutX="125.0" layoutY="294.0" mnemonicParsing="false" text="Comparar nombres" />
    </children>
 </Pane>
