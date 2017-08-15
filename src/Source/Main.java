@@ -19,7 +19,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("ComparadorNombres/ComparaNombresFXML.fxml"));
         primaryStage.setTitle("Ssssssss");
-        primaryStage.setScene(new Scene(root, 990, 428));
+        primaryStage.setScene(new Scene(root, 476, 199));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -18,25 +19,87 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import org.apache.poi.ss.usermodel.Cell;
 
+import javax.swing.*;
+
 public class ComparaNombres implements Initializable {
 
     @FXML
     Label label;
 
     @FXML
+    Label lblArchivo1Path;
+
+    @FXML
+    Label lblArchivo2Path;
+
+    @FXML
+    Button btoArchivo1;
+
+    @FXML
+    Button btoArchivo2;
+
+    @FXML
     Button btoCompara_nombres ;
 
     @FXML
-    Pane pane;
-    public void initialize(URL fxmlLocations, ResourceBundle resources){
+    TextField txtNombreArchivo;
 
+    @FXML
+    Pane pane;
+
+    File file1 = null;
+    File file2 = null;
+    public void initialize(URL fxmlLocations, ResourceBundle resources){
         btoCompara_nombres.setOnAction(event -> {
-            System.out.printf("hola   ");
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
-            File file = fileChooser.showOpenDialog(null);
-            System.out.println(file.getAbsolutePath());
+            ArrayList<String> file2existencias = new ArrayList<>();
+            ArrayList<String> file1existencias = new ArrayList<>();
+
+            DirectoryChooser dc = new DirectoryChooser();
+            dc.setTitle("Seleccione donde guardar el archivo.");
+            String nuevoArchivo = dc.showDialog(null).getAbsolutePath();
+            nuevoArchivo+='/'+txtNombreArchivo.getText()+".xls";
+            File archivoResult = new File(nuevoArchivo);
+
+            try{
+                archivoResult.createNewFile();
+            }catch (IOException ioe){
+                ioe.printStackTrace();
+            }
+
+            ComparaNombres cn = new ComparaNombres();
+            cn.readExcelFile(file1,file1existencias,1);//puntarenas
+            cn.readExcelFile(file2,file2existencias,2);//san jose
+            cn.writeExcelFile(archivoResult,cn.nombresACorregir(file1existencias,file2existencias));
+
+            limpiarVentana();
         });
+        btoArchivo1.setOnAction(event -> {
+            btoArchivo1.setDisable(true);
+            file1 = getFile();
+            String pathF1 = file1.getAbsolutePath();
+            lblArchivo1Path.setText(pathF1);
+            btoArchivo1.setDisable(false);
+        });
+        btoArchivo2.setOnAction(event -> {
+            btoArchivo2.setDisable(true);
+            file2 = getFile();
+            String pathF2 = file2.getAbsolutePath();
+            lblArchivo2Path.setText(pathF2);
+            btoArchivo2.setDisable(false);
+        });
+    }
+    public File getFile(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccione el archivo.");
+        File file = fileChooser.showOpenDialog(null);
+        return file;
+    }
+    public void limpiarVentana(){
+        file1 = null;
+        file2 = null;
+        txtNombreArchivo.setText("Comparacion");
+        lblArchivo1Path.setText("");
+        lblArchivo2Path.setText("");
     }
     public ArrayList<NombreNuevoAntiguo> nombresACorregir(ArrayList<String> SJ, ArrayList<String> PT){
         ArrayList<NombreNuevoAntiguo> nombreNuevoAntiguos = new ArrayList<>();
