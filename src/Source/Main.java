@@ -1,11 +1,16 @@
 package Source;
 
 
+import Source.ComparadorNombres.ComparaNombres;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends Application {
 
@@ -33,7 +38,7 @@ public class Main extends Application {
         }
         javaPoiUtils.readExcelFile(excelFile,PuntarenasExistencias,1);
         javaPoiUtils.readExcelFile(excelFile2,SanJoseExistencias,2);
-        javaPoiUtils.writeExcelFile(newExcelFile,javaPoiUtils.nombresACorregir(SanJoseExistencias,PuntarenasExistencias));*/
+        javaPoiUtils.writeExcelFile(newExcelFile,javaPoiUtils.nombresACorregir(PuntarenasExistencias,SanJoseExistencias));*/
     }
 
 }
