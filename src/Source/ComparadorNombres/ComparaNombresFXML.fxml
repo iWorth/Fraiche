@@ -7,13 +7,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Source.ComparadorNombres.ComparaNombres">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="335.0" prefWidth="275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Source.ComparadorNombres.ComparaNombres">
    <children>
-      <Label fx:id="label" layoutX="162.0" layoutY="123.0" prefHeight="118.0" prefWidth="165.0" text="Label">
+      <Label fx:id="label" layoutX="55.0" layoutY="14.0" prefHeight="118.0" prefWidth="165.0" text="Simply">
          <font>
             <Font size="49.0" />
          </font>
       </Label>
+      <Button fx:id="btoCompara_nombres" layoutX="72.0" layoutY="141.0" mnemonicParsing="false" text="Compara nombres" />
    </children>
 </Pane>

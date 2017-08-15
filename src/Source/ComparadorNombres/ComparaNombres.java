@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -23,9 +24,19 @@ public class ComparaNombres implements Initializable {
     Label label;
 
     @FXML
+    Button btoCompara_nombres ;
+
+    @FXML
     Pane pane;
     public void initialize(URL fxmlLocations, ResourceBundle resources){
 
+        btoCompara_nombres.setOnAction(event -> {
+            System.out.printf("hola   ");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Resource File");
+            File file = fileChooser.showOpenDialog(null);
+            System.out.println(file.getAbsolutePath());
+        });
     }
     public ArrayList<NombreNuevoAntiguo> nombresACorregir(ArrayList<String> SJ, ArrayList<String> PT){
         ArrayList<NombreNuevoAntiguo> nombreNuevoAntiguos = new ArrayList<>();
