@@ -6,12 +6,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -48,6 +55,7 @@ public class ComparaNombres implements Initializable {
     File file1 = null;
     File file2 = null;
     public void initialize(URL fxmlLocations, ResourceBundle resources){
+
         btoCompara_nombres.setOnAction(event -> {
             if(file1 == null || file2 == null){
                 if(file1==null)
@@ -98,6 +106,7 @@ public class ComparaNombres implements Initializable {
             btoArchivo2.setDisable(false);
         });
     }
+
     public File getFile(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccione el archivo.");
