@@ -9,7 +9,7 @@
 
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="199.0" prefWidth="476.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Source.ComparadorNombres.ComparaNombres">
    <children>
-      <Label fx:id="label" alignment="CENTER" contentDisplay="CENTER" layoutX="106.0" layoutY="14.0" prefHeight="33.0" prefWidth="263.0" text="Comparar nombres" textAlignment="JUSTIFY" textOverrun="CENTER_WORD_ELLIPSIS">
+      <Label fx:id="lblTitulo" alignment="CENTER" contentDisplay="CENTER" layoutX="106.0" layoutY="14.0" prefHeight="33.0" prefWidth="263.0" text="Comparar nombres" textAlignment="JUSTIFY" textOverrun="CENTER_WORD_ELLIPSIS">
          <font>
             <Font size="28.0" />
          </font>

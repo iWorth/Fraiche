@@ -19,12 +19,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-import javax.swing.*;
-
 public class ComparaNombres implements Initializable {
 
     @FXML
-    Label label;
+    Label lblTitulo;
 
     @FXML
     Label lblArchivo1Path;
@@ -51,7 +49,14 @@ public class ComparaNombres implements Initializable {
     File file2 = null;
     public void initialize(URL fxmlLocations, ResourceBundle resources){
         btoCompara_nombres.setOnAction(event -> {
-            ArrayList<String> file2existencias = new ArrayList<>();
+            if(file1 == null || file2 == null){
+                if(file1==null)
+                    lblArchivo1Path.setText("Debe seleccionar un archivo");
+                if(file2==null)
+                    lblArchivo2Path.setText("Debe seleccionar un archivo");
+                return;
+            }
+            ArrayList<NombreDescripcionEstatus> file2existencias = new ArrayList<>();
             ArrayList<String> file1existencias = new ArrayList<>();
 
             DirectoryChooser dc = new DirectoryChooser();
@@ -67,24 +72,29 @@ public class ComparaNombres implements Initializable {
             }
 
             ComparaNombres cn = new ComparaNombres();
-            cn.readExcelFile(file1,file1existencias,1);//puntarenas
-            cn.readExcelFile(file2,file2existencias,2);//san jose
-            cn.writeExcelFile(archivoResult,cn.nombresACorregir(file1existencias,file2existencias));
-
+            cn.readExcelFileFranc(file1,file1existencias);//puntarenas
+            cn.readExcelFileSanJose(file2,file2existencias);//san jose
+            lblTitulo.setText("Cargando...");
+            cn.writeExcelFile(archivoResult,cn.nombresACorregir(file2existencias,file1existencias));//san jose y puntarenas
+            lblTitulo.setText("Comparar nombres");
             limpiarVentana();
         });
         btoArchivo1.setOnAction(event -> {
             btoArchivo1.setDisable(true);
             file1 = getFile();
+            if(file1!=null){
             String pathF1 = file1.getAbsolutePath();
             lblArchivo1Path.setText(pathF1);
+            }
             btoArchivo1.setDisable(false);
         });
         btoArchivo2.setOnAction(event -> {
             btoArchivo2.setDisable(true);
             file2 = getFile();
-            String pathF2 = file2.getAbsolutePath();
-            lblArchivo2Path.setText(pathF2);
+            if(file2!=null) {
+                String pathF2 = file2.getAbsolutePath();
+                lblArchivo2Path.setText(pathF2);
+            }
             btoArchivo2.setDisable(false);
         });
     }
@@ -101,69 +111,43 @@ public class ComparaNombres implements Initializable {
         lblArchivo1Path.setText("");
         lblArchivo2Path.setText("");
     }
-    public ArrayList<NombreNuevoAntiguo> nombresACorregir(ArrayList<String> SJ, ArrayList<String> PT){
-        ArrayList<NombreNuevoAntiguo> nombreNuevoAntiguos = new ArrayList<>();
-        for(int i=0;i<PT.size();i++){
-            if(!SJ.contains(PT.get(i))){
-                nombreNuevoAntiguos.add(new NombreNuevoAntiguo(closer(SJ,PT.get(i)),PT.get(i)));
+    public ArrayList<NombreDescripcionEstatus> nombresACorregir(ArrayList<NombreDescripcionEstatus> SJ, ArrayList<String> PT){
+        ArrayList<NombreDescripcionEstatus> nombreNuevoAntiguos = new ArrayList<>();
+        for(int i=0;i<SJ.size();i++){
+            if(!PT.contains(SJ.get(i).nombre)){
+                nombreNuevoAntiguos.add(SJ.get(i));
             }
         }
         return nombreNuevoAntiguos;
     }
-    public String closer(ArrayList<String> SJ,String nombre) {
-        ArrayList<Integer> distancias = new ArrayList<>();
-        for(int i=0;i<SJ.size();i++){
-            distancias.add(distance(SJ.get(i),nombre));
-        }
-        Collections.sort(distancias);
-        int dis = 0;
-        for(int i=0;i<SJ.size();i++){
-            dis = distancias.get(0);
-            if(dis<3 && distance(SJ.get(i),nombre)==dis){
-                return SJ.get(i);
-            }
-        }
-        return "No Encontrado";
-
-    }
-    public static int distance(String a, String b) {
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-        int[] costs = new int[b.length() + 1];
-        for (int j = 0; j < costs.length; j++)
-            costs[j] = j;
-        for (int i = 1; i <= a.length(); i++)
-        {
-            costs[0] = i;
-            int nw = i - 1;
-            for (int j = 1; j <= b.length(); j++)
-            {
-                int cj = Math.min(1 + Math.min(costs[j], costs[j - 1]),
-                        a.charAt(i - 1) == b.charAt(j - 1) ? nw : nw + 1);
-                nw = costs[j];
-                costs[j] = cj;
-            }
-        }
-        return costs[b.length()];
-    }
-    public void writeExcelFile(File excelNewFile, ArrayList<NombreNuevoAntiguo> interseccion){
+    public void writeExcelFile(File excelNewFile, ArrayList<NombreDescripcionEstatus> interseccion){
         OutputStream excelNewOutputStream = null;
         try{
             excelNewOutputStream = new FileOutputStream(excelNewFile);
             HSSFWorkbook hssfWorkbookNew = new HSSFWorkbook();
             HSSFSheet hssfSheetNew = hssfWorkbookNew.createSheet("Corregir Nombre");
             HSSFRow hssfRowNew;
-            HSSFCell cellNewPT;
-            HSSFCell cellNewSJ;
-            for (int r = 0; r < interseccion.size();r++){
+            HSSFCell cellNewDesc;
+            HSSFCell cellNewName;
+            HSSFCell cellNewStat;
+            for (int r = 0; r <= interseccion.size();r++){
                 hssfRowNew = hssfSheetNew.createRow(r);
-                cellNewPT = hssfRowNew.createCell(0);
-                cellNewSJ = hssfRowNew.createCell(1);
-                cellNewPT.setCellType(HSSFCell.CELL_TYPE_STRING);
-                cellNewSJ.setCellType(HSSFCell.CELL_TYPE_STRING);
-                cellNewPT.setCellValue(interseccion.get(r).nombrePuntarenas);
-                cellNewSJ.setCellValue(interseccion.get(r).nombreSanJose);
-                System.out.println(distance(interseccion.get(r).nombrePuntarenas,interseccion.get(r).nombreSanJose));
+                cellNewName = hssfRowNew.createCell(0);
+                cellNewDesc = hssfRowNew.createCell(1);
+                cellNewStat = hssfRowNew.createCell(2);
+                cellNewName.setCellType(HSSFCell.CELL_TYPE_STRING);
+                cellNewDesc.setCellType(HSSFCell.CELL_TYPE_STRING);
+                cellNewStat.setCellType(HSSFCell.CELL_TYPE_STRING);
+                if(r==0){
+                    cellNewName.setCellValue("Nombre");
+                    cellNewDesc.setCellValue("Descripción");
+                    cellNewStat.setCellValue("Estatus");
+                }
+                else{
+                    cellNewName.setCellValue(interseccion.get(r-1).nombre);
+                    cellNewDesc.setCellValue(interseccion.get(r-1).descripcion);
+                    cellNewStat.setCellValue(interseccion.get(r-1).estatus);
+                }
             }
             hssfWorkbookNew.write(excelNewOutputStream);
             excelNewOutputStream.close();
@@ -175,8 +159,7 @@ public class ComparaNombres implements Initializable {
             ex.printStackTrace();
         }
     }
-    public void readExcelFile(File excelFile, ArrayList<String> existencias,int tipo){
-        //tipo 1 para puntarenas, 2 para san jose
+    public void readExcelFileFranc(File excelFile, ArrayList<String> existencias){
         InputStream excelStream = null;
         try {
             excelStream = new FileInputStream(excelFile);
@@ -187,7 +170,7 @@ public class ComparaNombres implements Initializable {
             int rows = hssfSheet.getLastRowNum();
             String cellValue;
             for (int r = 1; r < rows;r++) {
-                if(tipo==1 && r!=1){
+                if(r!=1) {
                     r++;
                 }
                 hssfRow = hssfSheet.getRow(r);
@@ -208,8 +191,7 @@ public class ComparaNombres implements Initializable {
                     }
                 }
             }
-            if(tipo==1)
-                existencias.remove(existencias.get(0));
+            existencias.remove(existencias.get(0));
         } catch (FileNotFoundException fileNotFoundException) {
             fileNotFoundException.printStackTrace();
         } catch (IOException ex) {
@@ -222,5 +204,63 @@ public class ComparaNombres implements Initializable {
             }
         }
     }
-
+    public void readExcelFileSanJose(File excelFile,ArrayList<NombreDescripcionEstatus> existencias){
+        InputStream excelStream = null;
+        try {
+            excelStream = new FileInputStream(excelFile);
+            HSSFWorkbook hssfWorkbook = new HSSFWorkbook(excelStream);
+            HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
+            HSSFRow hssfRow;
+            int name = 0;
+            int desc = 1;
+            int stat = 3;
+            int rows = hssfSheet.getLastRowNum();
+            NombreDescripcionEstatus cellValue;
+            String nombre;
+            String descrip;
+            String estatus;
+            for (int r = 1; r < rows;r++) {
+                hssfRow = hssfSheet.getRow(r);
+                if (hssfRow == null && r > 9){
+                    break;
+                }else{
+                    HSSFCell tmp = null;
+                    if(hssfRow!=null)
+                        tmp = hssfRow.getCell(2);
+                    if(hssfRow!=null && tmp!=null && tmp.getCellType() != Cell.CELL_TYPE_BLANK && !(tmp.getCellType() == Cell.CELL_TYPE_STRING && tmp.getStringCellValue().isEmpty())) {
+                        nombre = hssfRow.getCell(name) == null?"":
+                                (hssfRow.getCell(name).getCellType() == Cell.CELL_TYPE_STRING)?hssfRow.getCell(name).getStringCellValue():
+                                        (hssfRow.getCell(name).getCellType() == Cell.CELL_TYPE_NUMERIC)?"" + hssfRow.getCell(name).getNumericCellValue():
+                                                (hssfRow.getCell(name).getCellType() == Cell.CELL_TYPE_BOOLEAN)?"" + hssfRow.getCell(name).getBooleanCellValue():
+                                                        (hssfRow.getCell(name).getCellType() == Cell.CELL_TYPE_FORMULA)?"FORMULA":
+                                                                (hssfRow.getCell(name).getCellType() == Cell.CELL_TYPE_ERROR)?"ERROR":"";
+                        descrip = hssfRow.getCell(desc) == null?"":
+                                (hssfRow.getCell(desc).getCellType() == Cell.CELL_TYPE_STRING)?hssfRow.getCell(desc).getStringCellValue():
+                                        (hssfRow.getCell(desc).getCellType() == Cell.CELL_TYPE_NUMERIC)?"" + hssfRow.getCell(desc).getNumericCellValue():
+                                                (hssfRow.getCell(desc).getCellType() == Cell.CELL_TYPE_BOOLEAN)?"" + hssfRow.getCell(desc).getBooleanCellValue():
+                                                        (hssfRow.getCell(desc).getCellType() == Cell.CELL_TYPE_FORMULA)?"FORMULA":
+                                                                (hssfRow.getCell(desc).getCellType() == Cell.CELL_TYPE_ERROR)?"ERROR":"";
+                        estatus = hssfRow.getCell(stat) == null?"":
+                                (hssfRow.getCell(stat).getCellType() == Cell.CELL_TYPE_STRING)?hssfRow.getCell(stat).getStringCellValue():
+                                        (hssfRow.getCell(stat).getCellType() == Cell.CELL_TYPE_NUMERIC)?"" + hssfRow.getCell(stat).getNumericCellValue():
+                                                (hssfRow.getCell(stat).getCellType() == Cell.CELL_TYPE_BOOLEAN)?"" + hssfRow.getCell(stat).getBooleanCellValue():
+                                                        (hssfRow.getCell(stat).getCellType() == Cell.CELL_TYPE_FORMULA)?"FORMULA":
+                                                                (hssfRow.getCell(stat).getCellType() == Cell.CELL_TYPE_ERROR)?"ERROR":"";
+                        cellValue = new NombreDescripcionEstatus(nombre,descrip,estatus);
+                        existencias.add(cellValue);
+                    }
+                }
+            }
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                excelStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
